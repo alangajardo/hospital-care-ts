@@ -1,0 +1,21 @@
+/*Footer*/
+.footer-link {
+  color: #5a5a5a; /* Color gris */
+  text-decoration: none;
+  font-weight: 500;
+  margin-bottom: 0.5rem;
+  font-size: 1rem;
+  transition: color 0.3s, transform 0.3s;
+}
+
+.footer-link:hover {
+  color: #007bff;
+  transform: scale(1.05);
+  text-decoration: underline;
+}
+
+.img-fixed{
+  height: 300px;
+  object-fit: cover;
+  width: 100%;
+}
