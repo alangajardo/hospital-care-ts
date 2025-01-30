@@ -1,4 +1,4 @@
 export interface IMenuProps {
-    setView: (view: string) => void,
-    activeView: string
+    user: string | null;
+    logout: () => void,
 }

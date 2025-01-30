@@ -1,4 +1,4 @@
-import React, { createContext, Dispatch, SetStateAction, useEffect, useState } from "react"
+import React, { createContext, useEffect, useState } from "react"
 import { getDoctors } from "../services/api";
 import { IDoctor } from "../interfaces/IDoctor";
 import { DoctorProviderProps } from "../interfaces/DoctorProviderProps";
@@ -22,7 +22,7 @@ const DoctorProvider: React.FC<DoctorProviderProps> = ({children}) => {
             }
         }
         fetchDoctores()
-    }, [])
+    }, [doctores])
 
     return (
         <DoctorContext.Provider value={{doctores, error, setDoctores, setError}}>

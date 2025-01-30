@@ -2,6 +2,7 @@ import React, { Profiler, useEffect, useState } from "react"
 import HospitalInfo from "../components/HospitalInfo";
 import ServiceList from "../components/ServiceList";
 import { IServicio } from "../interfaces/IServicio";
+import MainLayout from "../layouts/MainLayout";
 
 function onRenderCallBack(id: string, phase: 'mount' | 'update' | 'nested-update', actualDuration: number, baseDuration: number, startTime: number, commitTime: number){
     console.log({id, phase, actualDuration, baseDuration, startTime, commitTime});
@@ -24,10 +25,12 @@ const HomeView = () => {
     const MemoizedComponent = React.memo(ServiceList)
 
     return (
-        <Profiler id="ServicesList" onRender={onRenderCallBack}>
-            <HospitalInfo />
-            <MemoizedComponent servicios={servicios} />
-        </Profiler>
+        <MainLayout>
+            <Profiler id="ServicesList" onRender={onRenderCallBack}>
+                <HospitalInfo />
+                <MemoizedComponent servicios={servicios} />
+            </Profiler>
+        </MainLayout>
     )
 }
 

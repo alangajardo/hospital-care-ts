@@ -1,18 +1,26 @@
-import React, { useState } from "react"
+import { useEffect, useState } from "react"
 import MenuItem from "./MenuItem"
 import { IMenuProps } from "../interfaces/IMenuProps"
+import { IView } from "../interfaces/IView"
 
-const Menu:  React.FC<IMenuProps> = ({setView, activeView}) => {
+const Menu: React.FC<IMenuProps> = ({user, logout}) => {
     const menuStyle = {
         height: "100px"
     }
 
-    const [views] = useState<string[]>(['Home', 'Equipo', 'Citas'])
-
-    const handleNavigation = (e: React.FormEvent, view: string) => {
-        e.preventDefault();
-        setView(view);
-    }
+    const [views, setViews] = useState<IView[]>([])
+    useEffect(() => {
+        const updateViews = [
+            {view: 'home', text: 'Home', condition: true},
+            {view: 'equipo', text: 'Equipo', condition: true},
+            {view: 'citas', text: 'Citas', condition: true},
+            {view: 'login', text: 'Login', condition: !user},
+            {view: 'reservas', text: 'Reservas', condition: user==='doctor'},
+            {view: 'adm-equipo', text: 'Adm. Equipo', condition: user=='admin'},
+            {view: 'logout', text: 'Logout', condition: !!user}
+        ]
+        setViews(updateViews)
+    }, [user])
 
     return (
         <nav className="navbar navbar-expand-lg bg-body-tertiary sticky-top">
@@ -24,8 +32,8 @@ const Menu:  React.FC<IMenuProps> = ({setView, activeView}) => {
                 <div className="collapse navbar-collapse" id="navbarSupportedContent">
                     <ul className="navbar-nav me-auto mb-2 mb-lg-0">
                         {
-                            views.map((view, index) => (
-                                <MenuItem key={index} handleNavigation={handleNavigation} view={view} activeView={activeView===view}/>
+                            views.filter((view) => view.condition).map((view, index) => (
+                                <MenuItem key={index} view={view.view} text={view.text} logout={view.view==='logout'  ? logout : undefined}/>
                             ))
                         }
                     </ul>

@@ -1,8 +1,6 @@
 import React from "react"
 import { IServiceListProps } from "../interfaces/IServiceListProps"
 
-
-
 const ServiceList: React.FC<IServiceListProps> = ({servicios}) => {
     const servicio__img: React.CSSProperties = {
         width: '100%',

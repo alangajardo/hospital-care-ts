@@ -4,6 +4,7 @@ import { getDoctors } from "../services/api";
 import { IAppointmentFormProps } from "../interfaces/IAppointmentFormProps";
 import { IFormCita } from "../interfaces/IFormCita";
 import { IDoctor } from "../interfaces/IDoctor";
+import DOMPurify from "dompurify";
 
 const AppointmentForm: React.FC<IAppointmentFormProps> = ({submitForm}) => {
     const context = useContext(DoctorContext)
@@ -14,6 +15,7 @@ const AppointmentForm: React.FC<IAppointmentFormProps> = ({submitForm}) => {
     const {doctores, setDoctores, setError} = context
     const [formCita, setFormCita] = useState<IFormCita>({
         nombre: '',
+        doctor: '',
         especialidad: '',
         fecha: ''
     })
@@ -30,23 +32,22 @@ const AppointmentForm: React.FC<IAppointmentFormProps> = ({submitForm}) => {
     }, [])
 
     const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-        setFormCita({...formCita, [e.target.name]: e.target.value})
+        const sanitizedValue = DOMPurify.sanitize(e.target.value)
+        setFormCita({...formCita, [e.target.name]: sanitizedValue})
     }
 
-    const handleSubmit = (e: React.FormEvent) => {
+    const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault()
-        submitForm(formCita)
-        if(nombreRef.current && doctorRef.current && especialidadRef.current && fechaRef.current){
-            nombreRef.current.value = ''
-            doctorRef.current.value = ''
-            especialidadRef.current.value = ''
-            fechaRef.current.value = ''
-            nombreRef.current.focus()
+        await submitForm(formCita)
+        setFormCita({ nombre: "", doctor: "", especialidad: "", fecha: "" })
+        if (doctorRef.current) {
+            doctorRef.current.value = "";
         }
     }
 
     const selectEspecialidad = (e: React.ChangeEvent<HTMLSelectElement>) => {
-        setFormCita({...formCita, especialidad: e.target.value})
+        const [especialidad, doctor] = e.target.value.split(",")
+        setFormCita((prev) => ({...prev, especialidad: DOMPurify.sanitize(especialidad.trim()), doctor: DOMPurify.sanitize(doctor.trim())}))
     }
 
     const recargarDoctores = async () => {
@@ -62,7 +63,7 @@ const AppointmentForm: React.FC<IAppointmentFormProps> = ({submitForm}) => {
     }
 
     return (
-<form className="bg-light p-4 shadow rounded" onSubmit={handleSubmit}>
+        <form className="bg-light p-4 shadow rounded" onSubmit={handleSubmit}>
             <h1 className="text-center mb-4">Formulario de Citas</h1>
             <div className="mb-3">
                 <label className="form-label">Nombre</label>
@@ -75,11 +76,11 @@ const AppointmentForm: React.FC<IAppointmentFormProps> = ({submitForm}) => {
                 <label className="form-label">Doctor</label>
                 <div className="input-group">
                     <span className="input-group-text"><i className="bi bi-capsule"></i></span>
-                    <select ref={doctorRef} className="form-select" onChange={selectEspecialidad} required>
+                    <select ref={doctorRef} className="form-select" onChange={selectEspecialidad} name="doctor" required>
                         <option value="">Seleccionar Doctor</option>
                         {
                             doctores.map(doctor=>(
-                                <option key={doctor.id} value={doctor.especialidad}>{doctor.nombre}</option>
+                                <option key={doctor.id} value={`${doctor.especialidad}, ${doctor.nombre}`}>{doctor.nombre}</option>
                             ))
                         }
                     </select>

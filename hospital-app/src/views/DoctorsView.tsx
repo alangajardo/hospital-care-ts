@@ -1,8 +1,11 @@
 import DoctorList from "../components/DoctorList"
+import MainLayout from "../layouts/MainLayout"
 
 const DoctorsView = () => {
     return (
-        <DoctorList />
+        <MainLayout>
+            <DoctorList />
+        </MainLayout>
     )
 }
 

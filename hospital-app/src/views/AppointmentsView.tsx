@@ -1,13 +1,24 @@
 import AppointmentForm from "../components/AppointmentForm"
 import { IFormCita } from "../interfaces/IFormCita"
+import MainLayout from "../layouts/MainLayout"
+import { createCita } from "../services/api"
 
 const AppointmentsView = () => {
-    const submitForm = (data: IFormCita) => {
-        console.log(data)
+    const submitForm = async (data: IFormCita) => {
+        try {
+            const response = await createCita(data)
+            if(response){
+                alert("Cita agendada con éxito!")
+            }
+        } catch (error) {
+            console.log(error)
+        }
     }
 
     return (
-        <AppointmentForm submitForm={submitForm}/>
+        <MainLayout>
+            <AppointmentForm submitForm={submitForm}/>
+        </MainLayout>
     )
 }
 
